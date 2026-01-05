@@ -53,3 +53,4 @@
 - RAG retrieval: hybrid search (0.7 * vector_similarity + 0.3 * BM25_score). Return top-5 chunks, then re-rank with cross-encoder. [file:1][file:3]
 - Context window management: prioritize system prompt (fixed), then retrieved context (dynamic), then conversation history (truncate oldest first). Reserve 20% for output. [file:1][file:4][file:5]
 
+
