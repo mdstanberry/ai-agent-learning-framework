@@ -1,0 +1,14 @@
+{
+  "name": "email_greeting",
+  "content": "Hello {{name}},\n\nThank you for your interest in {{product}}.",
+  "category": "email",
+  "tags": [
+    "greeting",
+    "customer-service"
+  ],
+  "description": "Standard email greeting template",
+  "metadata": {},
+  "created_at": "2026-01-05T14:11:11.732152",
+  "updated_at": "2026-01-05T14:11:11.732157",
+  "version": 2
+}

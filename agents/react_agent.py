@@ -486,10 +486,10 @@ if __name__ == "__main__":
         print(f"Unique tools used: {len(unique_tools)}")
         print(f"Tools called: {', '.join(tool_calls_made)}")
         
-         if len(tool_calls_made) >= 2:
-             print("\n[SUCCESS] Agent made multiple tool calls as required!")
-         else:
-             print(f"\n[WARNING] Agent should have made multiple tool calls but only made {len(tool_calls_made)}")
+        if len(tool_calls_made) >= 2:
+            print("\n[SUCCESS] Agent made multiple tool calls as required!")
+        else:
+            print(f"\n[WARNING] Agent should have made multiple tool calls but only made {len(tool_calls_made)}")
         
     except Exception as e:
         print(f"\nError: {e}")

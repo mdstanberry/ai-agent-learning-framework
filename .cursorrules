@@ -1,0 +1,55 @@
+# Project: AI Agent Platform - Specific Rules
+
+## Memory Implementation
+- Use PostgreSQL + pgvector for semantic memory (embeddings). Use Neo4j for graph/relationship memory. Use Kafka + Postgres for event sourcing. [file:3][file:4]
+- All memory writes must be atomic operations. Use LangGraph checkpointers for short-term session state with thread_id scoping. [file:3][file:4]
+- Implement memory retrieval in this order: (1) vector search for semantic matches, (2) graph traversal for relationships, (3) event log validation for consistency. [file:3][file:4]
+- Store user profiles as: preferences (key-value), episodic interactions (timestamped events), and learned patterns (procedural memory). Never mix these stores. [file:3][file:5]
+
+## Tool & MCP Integration
+- All tools must be registered in `/tools/registry.py` with MCP-compliant schemas including: name, description, input_schema (JSON Schema), and error types. [file:2][file:4]
+- Tool execution follows ReAct pattern: Thought → Action → Observation. Always return structured observations with status, result, and metadata fields. [file:4][file:5]
+- For MCP servers: implement health checks, schema versioning (semantic versioning), and graceful degradation when resources are unavailable. [file:4]
+- Never construct MCP resource URIs manually; use the resource template system. Cache resource listings; only refresh on subscription updates. [file:4]
+
+## API Design Standards
+- Endpoint naming: `/api/v1/{resource}/{id}` for singular, `/api/v1/{resources}` for collections. Use plural nouns for collections. [file:2]
+- Idempotency: GET, PUT, DELETE must be idempotent. POST creates; repeated calls create multiple resources unless idempotency key is provided. [file:2]
+- Status codes: 200 (success), 201 (created), 400 (client error), 401 (auth), 403 (forbidden), 404 (not found), 500 (server error). Always return JSON error bodies with `{error, message, details}`. [file:2]
+- Pagination: use cursor-based pagination for large sets. Return `{data, next_cursor, has_more}`. Limit default page size to 50; max 200. [file:2]
+
+## Evaluation & Testing
+- Evaluation harness lives in `/tests/agent_evals/`. Each agent requires: unit tests (tool behavior), integration tests (end-to-end flows), and evaluation sets (real scenarios + expected outputs). [file:1][file:5]
+- Metrics to track: accuracy (correct outcomes), latency (p50, p95, p99), cost (tokens per request), safety (guardrail triggers), user satisfaction (thumbs up/down). [file:1][file:5]
+- Before merging agent changes: run eval suite, ensure <5% regression on accuracy metrics, and verify latency budget (<3s for interactive). [file:1][file:5]
+- Maintain a "golden test set" of 50+ diverse scenarios that never changes. Track agent performance against this set over time to detect drift. [file:1][file:4][file:5]
+
+## Safety & Security Guardrails
+- All agent inputs pass through `/safety/input_filter.py` checking for: jailbreak attempts, PII extraction, malicious code, and prompt injections. [file:1][file:4][file:5]
+- Output filtering: scan for secrets (regex + ML), PII redaction (NER), and toxic content (classifier). Block outputs exceeding thresholds. [file:1][file:4]
+- Tool allowlists: define per-agent in `/config/agent_permissions.yaml`. High-risk tools (file_write, code_exec, external_api) require explicit opt-in + confirmation. [file:1][file:4][file:5]
+- Implement circuit breakers: if agent triggers >3 safety violations in 10 minutes, pause execution and alert. [file:1][file:4]
+
+## Agent Persona & System Prompts
+- System prompts live in `/prompts/{agent_name}.yaml` with sections: role, context, constraints, examples, and error_handling. [file:5]
+- Persona structure: "You are [specific role] specializing in [narrow domain]. Your goal is [single objective]. You have access to [specific tools]. You NEVER [explicit prohibitions]." [file:5]
+- Include 2-3 few-shot examples in the system prompt showing correct tool usage and error recovery patterns. [file:4][file:5]
+- Version all prompts with semantic versioning. Track prompt changes in git; run eval suite on prompt updates. [file:1][file:5]
+
+## Multi-Agent Patterns
+- Use hierarchical delegation: supervisor agent routes to specialist agents. Specialists never call each other directly; always route through supervisor. [file:4][file:5]
+- Message passing between agents uses structured envelopes: `{from_agent, to_agent, task, context, result}`. Log all inter-agent messages. [file:4][file:5]
+- Implement agent registries in `/agents/registry.py` declaring capabilities, cost profiles, and availability. Supervisor selects agents dynamically. [file:4][file:5]
+
+## Deployment & Monitoring
+- Staging environment must mirror production data distributions. Deploy to staging first; soak for 24h monitoring error rates. [file:1][file:5]
+- Production rollout: canary (5% traffic) → 50% → 100% over 48h. Automatic rollback if error rate >2x baseline or latency >1.5x p95. [file:1][file:5]
+- Real-time dashboards must show: requests/min, error rate, avg latency, cost per request, safety trigger rate, and user satisfaction score. [file:1][file:4][file:5]
+- Human-in-the-loop review required for: first 100 production runs of new agents, all high-risk tool calls, and any safety violation. [file:1][file:5]
+
+## Data & Context Management
+- Chunk documents at semantic boundaries (paragraphs/sections) not fixed token counts. Chunk size: 500-1000 tokens with 10% overlap. [file:1][file:3]
+- Embed chunks with metadata: source, timestamp, author, classification level. Store embeddings in pgvector with HNSW index. [file:3][file:4]
+- RAG retrieval: hybrid search (0.7 * vector_similarity + 0.3 * BM25_score). Return top-5 chunks, then re-rank with cross-encoder. [file:1][file:3]
+- Context window management: prioritize system prompt (fixed), then retrieved context (dynamic), then conversation history (truncate oldest first). Reserve 20% for output. [file:1][file:4][file:5]
+

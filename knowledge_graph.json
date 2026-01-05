@@ -1,0 +1,44 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "type": "user",
+      "properties": {
+        "name": "Alice",
+        "age": 30,
+        "location": "San Francisco"
+      },
+      "id": "user123"
+    },
+    {
+      "type": "product",
+      "properties": {
+        "name": "Widget Pro",
+        "price": 99.99
+      },
+      "id": "product456"
+    },
+    {
+      "id": "user789"
+    }
+  ],
+  "edges": [
+    {
+      "type": "purchased",
+      "source": "user123",
+      "target": "product456"
+    },
+    {
+      "type": "knows",
+      "source": "user123",
+      "target": "user789"
+    },
+    {
+      "type": "recommended",
+      "source": "user789",
+      "target": "product456"
+    }
+  ]
+}
