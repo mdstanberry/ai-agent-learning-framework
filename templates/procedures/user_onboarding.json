@@ -1,0 +1,19 @@
+{
+  "name": "user_onboarding",
+  "steps": [
+    "1. Create user account",
+    "2. Send welcome email",
+    "3. Set up initial preferences",
+    "4. Log first activity"
+  ],
+  "category": "workflow",
+  "tags": [
+    "onboarding",
+    "user-management"
+  ],
+  "description": "",
+  "metadata": {},
+  "created_at": "2026-01-05T14:11:11.735052",
+  "updated_at": "2026-01-05T14:11:11.735055",
+  "version": 2
+}

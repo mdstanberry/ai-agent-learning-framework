@@ -1,0 +1,25 @@
+# Core LLM Providers
+anthropic>=0.18.0
+openai>=1.12.0
+
+# Data Validation and Schemas
+pydantic>=2.6.0
+
+# Logging and Output Formatting
+rich>=13.7.0
+
+# Configuration Management
+python-dotenv>=1.0.0
+pyyaml>=6.0.1
+
+# Memory Systems
+chromadb>=0.4.22
+networkx>=3.2.1
+
+# Async Support
+aiohttp>=3.9.0
+
+# Testing and Evaluation (optional but recommended)
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+

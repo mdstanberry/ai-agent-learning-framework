@@ -1,0 +1,15 @@
+{
+  "name": "python_hello",
+  "content": "print('Hello, World!')",
+  "language": "python",
+  "category": "examples",
+  "tags": [
+    "hello-world",
+    "beginner"
+  ],
+  "description": "",
+  "metadata": {},
+  "created_at": "2026-01-05T14:11:11.733214",
+  "updated_at": "2026-01-05T14:11:11.733218",
+  "version": 2
+}

@@ -1,0 +1,163 @@
+# AI Agent Learning Framework Configuration
+
+# LLM Provider Settings
+llm:
+  # Default provider: "openai" or "anthropic"
+  provider: "openai"
+  
+  # OpenAI Configuration
+  openai:
+    default_model: "gpt-4-turbo"
+    # Available models: gpt-4-turbo, gpt-4, gpt-3.5-turbo
+    temperature: 0.7
+    max_tokens: 2000
+    top_p: 1.0
+    frequency_penalty: 0.0
+    presence_penalty: 0.0
+  
+  # Anthropic Configuration
+  anthropic:
+    default_model: "claude-3-5-sonnet-20241022"
+    # Available models: claude-3-5-sonnet-20241022, claude-3-opus-20240229, claude-3-sonnet-20240229
+    temperature: 0.7
+    max_tokens: 2000
+    top_p: 1.0
+  
+  # Retry Configuration
+  retry:
+    max_retries: 3
+    initial_delay: 1.0  # seconds
+    max_delay: 60.0     # seconds
+    exponential_base: 2
+
+# Agent Configuration
+agent:
+  max_iterations: 10
+  # Maximum number of Think-Act-Observe cycles
+  
+  timeout: 300  # seconds
+  # Maximum time for agent execution
+  
+  enable_tools: true
+  # Whether to allow tool usage
+
+# Memory Configuration
+memory:
+  # Short-term memory (context window)
+  short_term:
+    max_messages: 50
+    summarize_threshold: 40
+    # When to trigger summarization
+  
+  # Episodic memory (vector database)
+  episodic:
+    enabled: true
+    db_type: "chromadb"  # Options: chromadb, faiss
+    db_path: "./chroma_db"
+    collection_name: "agent_episodes"
+    embedding_model: "text-embedding-3-small"
+  
+  # Semantic memory (knowledge graph)
+  semantic:
+    enabled: true
+    storage_path: "./knowledge_graph.json"
+  
+  # Procedural memory (templates/procedures)
+  procedural:
+    enabled: true
+    templates_path: "./templates"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  
+  # Console output formatting
+  console:
+    enable_colors: true
+    show_timestamps: true
+    
+  # File logging
+  file:
+    enabled: false
+    log_path: "./logs/agent.log"
+    max_size_mb: 10
+    backup_count: 5
+
+# Pattern-Specific Settings
+patterns:
+  # Prompt Chaining
+  chaining:
+    min_outline_sections: 3
+    enable_validation_gates: true
+  
+  # Routing
+  routing:
+    confidence_threshold: 0.7
+    fallback_to_general: true
+  
+  # Parallelization
+  parallelization:
+    max_workers: 5
+    timeout_per_task: 60  # seconds
+  
+  # Orchestrator-Workers
+  orchestrator:
+    max_workers: 3
+    worker_timeout: 120  # seconds
+  
+  # Evaluator-Optimizer
+  evaluator:
+    max_iterations: 5
+    quality_threshold: 0.8
+    improvement_threshold: 0.1  # Minimum improvement to continue
+
+# Cost Tracking
+cost_tracking:
+  enabled: true
+  log_token_usage: true
+  
+  # Approximate costs per 1M tokens (update as pricing changes)
+  pricing:
+    openai:
+      "gpt-4-turbo":
+        input: 10.00
+        output: 30.00
+      "gpt-4":
+        input: 30.00
+        output: 60.00
+      "gpt-3.5-turbo":
+        input: 0.50
+        output: 1.50
+    anthropic:
+      "claude-3-5-sonnet-20241022":
+        input: 3.00
+        output: 15.00
+      "claude-3-opus-20240229":
+        input: 15.00
+        output: 75.00
+
+# Tool Configuration
+tools:
+  search:
+    enabled: true
+    max_results: 5
+  
+  file_ops:
+    enabled: true
+    allowed_extensions: [".txt", ".md", ".json", ".py"]
+    max_file_size_mb: 10
+  
+  calculator:
+    enabled: true
+    precision: 10
+
+# Safety Settings
+safety:
+  human_in_the_loop:
+    enabled: false
+    # Enable for destructive operations
+    
+  rate_limiting:
+    enabled: true
+    max_requests_per_minute: 60
+
